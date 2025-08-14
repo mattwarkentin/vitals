@@ -74,6 +74,7 @@ collapse_tool_result_value <- function(x) {
   switch(
     x$type,
     text = x$text,
+    image = paste0("data:", x$source$media_type, ";base64,", x$source$data),
     collapse_modal_result(x$source, type = x$type)
   )
 }
