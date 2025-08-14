@@ -73,7 +73,7 @@ expect_valid_log <- local({
       is.null(status) || status == 0,
       paste0(
         c("The generated log did not pass the pydantic model: ", result),
-        collapse = ""
+        collapse = "\n"
       )
     )
   }
