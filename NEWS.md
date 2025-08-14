@@ -10,6 +10,12 @@
 
 * Updated the vendored Inspect Log Viewer to Inspect version 0.3.122 (#138).
 
+* `detect_match()` now lists the correct `location` options in its default 
+  value (#140, #142 by @mattwarkentin).
+
+* The log viewer previously reported the scorer's response as both the solver's
+  and scorers response—this is now fixed (#141, #142 by @mattwarkentin).
+
 # vitals 0.1.0
 
 * Initial CRAN submission.
