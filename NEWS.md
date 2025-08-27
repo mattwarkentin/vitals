@@ -1,5 +1,8 @@
 # vitals (development version)
 
+* Solvers and scorers can now return arbitrary R objects in metadata; they 
+  will be summarized in a lossy format when logged to .json.
+
 * The package will now set the envvar `IN_VITALS_EVAL` to `"true"` during 
   solving and scoring.
 
