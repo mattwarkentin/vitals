@@ -67,14 +67,33 @@ expect_valid_log <- local({
       stdout = TRUE,
       stderr = TRUE
     )
+
+    # Get rid of elements starting with "For further information visit"
+    result <- result[!grepl("For further information visit", result)]
+    # Add .field CLI on the fields
+    result_length <- length(result)
+    field_positions <- seq(2, result_length, by = 2)
+
+    for (pos in field_positions) {
+      result[pos] <- glue::glue("{{.field {result[pos]}}}")
+    }
+
+    result_with_breaks <- result[1] # Start with first element
+    for (i in seq(2, length(result), by = 2)) {
+      result_with_breaks <- c(result_with_breaks, "", result[i:(i + 1)])
+    }
+
+    formatted_message <- cli::format_message(c(
+      "The generated log did not pass the pydantic model:",
+      "",
+      result_with_breaks
+    ))
+
     status <- attr(result, "status")
 
     expect(
       is.null(status) || status == 0,
-      paste0(
-        c("The generated log did not pass the pydantic model: ", result),
-        collapse = "\n"
-      )
+      formatted_message
     )
   }
 })
