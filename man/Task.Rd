@@ -302,7 +302,7 @@ Log the task to a directory.
 Note that, if an \code{VITALS_LOG_DIR} envvar is set, this will happen
 automatically in \verb{$eval()}.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Task$log(dir = vitals_log_dir())}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Task$log(dir = self$dir)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
