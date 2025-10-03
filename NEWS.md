@@ -1,5 +1,9 @@
 # vitals (development version)
 
+* Manifest files for deployed logs are now named `listing.json` rather than `logs.json` for compatibility with newer Inspect versions.
+
+* Removed dependency on the rstudioapi package (#146).
+
 * `$eval()` now routes arguments to solvers and scorers based on
   their function signatures, allowing users to pass arguments specific to each
   without requiring ellipses in both functions (#152). 
