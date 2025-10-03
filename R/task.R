@@ -184,6 +184,12 @@ Task <- R6::R6Class(
     #' calling `$new()` and then this method on the resulting object.
     #'
     #' @param ... Additional arguments passed to the solver and scorer functions.
+    #' All arguments must be named. Arguments are routed based on function
+    #' signatures: if an argument name matches a parameter in the solver, it goes
+    #' to the solver; if it matches a parameter in the scorer, it goes to the
+    #' scorer. Arguments matching both go to both. Unmatched arguments are passed
+    #' to any function with `...` in its signature. An error is raised if an
+    #' argument matches neither function and neither accepts `...`.
     #' @param view Automatically open the viewer after evaluation (defaults to
     #' TRUE if interactive, FALSE otherwise).
     #'
@@ -195,11 +201,21 @@ Task <- R6::R6Class(
         private$reset_for_new_eval()
       }
 
+      dots <- list(...)
+      if (length(dots) > 0 && (is.null(names(dots)) || any(names(dots) == ""))) {
+        cli::cli_abort(
+          "All arguments in {.code ...} must be named.",
+          call = call2("$eval()")
+        )
+      }
+
+      split_args <- private$split_dots(dots)
+
       cli::cli_progress_step("Solving")
-      self$solve(..., epochs = epochs)
+      do.call(self$solve, c(split_args$solver, list(epochs = epochs)))
 
       cli::cli_progress_step("Scoring")
-      self$score(...)
+      do.call(self$score, split_args$scorer)
       self$measure()
 
       self$log(self$dir)
@@ -764,6 +780,50 @@ Task <- R6::R6Class(
       }
 
       samples
+    },
+
+    split_dots = function(dots) {
+      solver_fn <- environment(private$solver)$fn
+      scorer_fn <- environment(private$scorer)$fn
+
+      solver_formals <- names(formals(solver_fn))
+      scorer_formals <- names(formals(scorer_fn))
+
+      solver_has_dots <- "..." %in% solver_formals
+      scorer_has_dots <- "..." %in% scorer_formals
+
+      solver_args <- list()
+      scorer_args <- list()
+
+      for (arg_name in names(dots)) {
+        matches_solver <- arg_name %in% solver_formals
+        matches_scorer <- arg_name %in% scorer_formals
+
+        if (matches_solver) {
+          solver_args[[arg_name]] <- dots[[arg_name]]
+        }
+
+        if (matches_scorer) {
+          scorer_args[[arg_name]] <- dots[[arg_name]]
+        }
+
+        if (!matches_solver && !matches_scorer) {
+          if (solver_has_dots) {
+            solver_args[[arg_name]] <- dots[[arg_name]]
+          }
+          if (scorer_has_dots) {
+            scorer_args[[arg_name]] <- dots[[arg_name]]
+          }
+          if (!solver_has_dots && !scorer_has_dots) {
+            cli::cli_abort(
+              "Argument {.arg {arg_name}} does not match any parameter in the solver or scorer functions.",
+              call = call2("$eval()")
+            )
+          }
+        }
+      }
+
+      list(solver = solver_args, scorer = scorer_args)
     },
 
     # The output of `logged(solver)(...)`
