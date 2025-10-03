@@ -12,6 +12,12 @@ on:
 
 jobs:
   claude:
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: read
+      id-token: write
+      actions: read
     uses: simonpcouch/assign/.github/workflows/assign-claude-code.yml@main
     secrets:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
