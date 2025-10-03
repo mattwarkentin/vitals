@@ -157,7 +157,7 @@ test_that("vitals writes valid logs with numeric solver results (#145)", {
   )
 
   chat <- ellmer::chat_anthropic(model = "claude-3-7-sonnet-latest")
-  chat$chat("Hey!")
+  chat$chat("Hey!", echo = FALSE)
 
   simple_solver <- function(inputs) {
     list(
