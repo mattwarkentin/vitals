@@ -2,7 +2,8 @@
 
 * `$eval()` now routes arguments to solvers and scorers based on
   their function signatures, allowing users to pass arguments specific to each
-  without requiring ellipses in both functions (#98, #152). `$eval()` now errors when supplied unnamed arguments.
+  without requiring ellipses in both functions (#152). 
+  `$eval()` now errors when supplied unnamed arguments.
 
 * Solvers and scorers can now return arbitrary R objects in metadata; they
   will be summarized in a lossy format when logged to .json.
