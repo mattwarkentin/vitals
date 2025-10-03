@@ -893,3 +893,187 @@ test_that("token usage is logged correctly (with unrelated token usage)", {
     usage_after_solve$output - usage_before$output
   )
 })
+
+# argument routing --------------------------------------------------------
+test_that("eval routes arguments correctly to solver and scorer", {
+  withr::local_envvar(list(VITALS_LOG_DIR = withr::local_tempdir()))
+  withr::local_options(cli.default_handler = function(...) {})
+  local_mocked_bindings(interactive = function(...) FALSE)
+  library(ellmer)
+
+  simple_addition <- tibble::tibble(
+    input = c("What's 2+2?", "What's 2+3?"),
+    target = c("4", "5")
+  )
+
+  solver_arg_tracker <- NULL
+  scorer_arg_tracker <- NULL
+
+  custom_solver <- function(inputs, solver_param = "default_solver") {
+    solver_arg_tracker <<- solver_param
+    list(
+      result = c("4", "5"),
+      solver_chat = list(
+        chat_openai(model = "gpt-4.1-nano"),
+        chat_openai(model = "gpt-4.1-nano")
+      )
+    )
+  }
+
+  custom_scorer <- function(samples, scorer_param = "default_scorer") {
+    scorer_arg_tracker <<- scorer_param
+    list(score = c(1, 1))
+  }
+
+  tsk <- Task$new(
+    dataset = simple_addition,
+    solver = custom_solver,
+    scorer = custom_scorer
+  )
+
+  tsk$eval(solver_param = "passed_to_solver", scorer_param = "passed_to_scorer")
+
+  expect_equal(solver_arg_tracker, "passed_to_solver")
+  expect_equal(scorer_arg_tracker, "passed_to_scorer")
+})
+
+test_that("eval routes arguments to functions with ellipses", {
+  withr::local_envvar(list(VITALS_LOG_DIR = withr::local_tempdir()))
+  withr::local_options(cli.default_handler = function(...) {})
+  local_mocked_bindings(interactive = function(...) FALSE)
+  library(ellmer)
+
+  simple_addition <- tibble::tibble(
+    input = c("What's 2+2?", "What's 2+3?"),
+    target = c("4", "5")
+  )
+
+  solver_dots_tracker <- NULL
+  scorer_dots_tracker <- NULL
+
+  solver_with_dots <- function(inputs, ...) {
+    dots <- list(...)
+    solver_dots_tracker <<- dots
+    list(
+      result = c("4", "5"),
+      solver_chat = list(
+        chat_openai(model = "gpt-4.1-nano"),
+        chat_openai(model = "gpt-4.1-nano")
+      )
+    )
+  }
+
+  scorer_with_dots <- function(samples, ...) {
+    dots <- list(...)
+    scorer_dots_tracker <<- dots
+    list(score = c(1, 1))
+  }
+
+  tsk <- Task$new(
+    dataset = simple_addition,
+    solver = solver_with_dots,
+    scorer = scorer_with_dots
+  )
+
+  tsk$eval(unmatched_param = "goes_to_both")
+
+  expect_equal(solver_dots_tracker$unmatched_param, "goes_to_both")
+  expect_equal(scorer_dots_tracker$unmatched_param, "goes_to_both")
+})
+
+test_that("eval routes unmatched arguments to solver with ellipses only", {
+  withr::local_envvar(list(VITALS_LOG_DIR = withr::local_tempdir()))
+  withr::local_options(cli.default_handler = function(...) {})
+  local_mocked_bindings(interactive = function(...) FALSE)
+  library(ellmer)
+
+  simple_addition <- tibble::tibble(
+    input = c("What's 2+2?", "What's 2+3?"),
+    target = c("4", "5")
+  )
+
+  solver_dots_tracker <- NULL
+
+  solver_with_dots <- function(inputs, ...) {
+    dots <- list(...)
+    solver_dots_tracker <<- dots
+    list(
+      result = c("4", "5"),
+      solver_chat = list(
+        chat_openai(model = "gpt-4.1-nano"),
+        chat_openai(model = "gpt-4.1-nano")
+      )
+    )
+  }
+
+  scorer_no_dots <- function(samples) {
+    list(score = c(1, 1))
+  }
+
+  tsk <- Task$new(
+    dataset = simple_addition,
+    solver = solver_with_dots,
+    scorer = scorer_no_dots
+  )
+
+  tsk$eval(unmatched_param = "goes_to_solver")
+
+  expect_equal(solver_dots_tracker$unmatched_param, "goes_to_solver")
+})
+
+test_that("eval errors with unnamed arguments", {
+  withr::local_envvar(list(VITALS_LOG_DIR = withr::local_tempdir()))
+  withr::local_options(cli.default_handler = function(...) {})
+  local_mocked_bindings(interactive = function(...) FALSE)
+
+  simple_addition <- tibble::tibble(
+    input = c("What's 2+2?", "What's 2+3?"),
+    target = c("4", "5")
+  )
+
+  tsk <- Task$new(
+    dataset = simple_addition,
+    solver = function(inputs) {
+      list(result = c("4", "5"), solver_chat = list(NULL, NULL))
+    },
+    scorer = function(samples) {
+      list(score = c(1, 1))
+    }
+  )
+
+  expect_snapshot(tsk$eval("unnamed_arg"), error = TRUE)
+})
+
+test_that("eval errors when argument matches neither function and neither has ellipses", {
+  withr::local_envvar(list(VITALS_LOG_DIR = withr::local_tempdir()))
+  withr::local_options(cli.default_handler = function(...) {})
+  local_mocked_bindings(interactive = function(...) FALSE)
+  library(ellmer)
+
+  simple_addition <- tibble::tibble(
+    input = c("What's 2+2?", "What's 2+3?"),
+    target = c("4", "5")
+  )
+
+  solver_no_dots <- function(inputs, solver_param = "default") {
+    list(
+      result = c("4", "5"),
+      solver_chat = list(
+        chat_openai(model = "gpt-4.1-nano"),
+        chat_openai(model = "gpt-4.1-nano")
+      )
+    )
+  }
+
+  scorer_no_dots <- function(samples, scorer_param = "default") {
+    list(score = c(1, 1))
+  }
+
+  tsk <- Task$new(
+    dataset = simple_addition,
+    solver = solver_no_dots,
+    scorer = scorer_no_dots
+  )
+
+  expect_snapshot(tsk$eval(unmatched_param = "error"), error = TRUE)
+})
