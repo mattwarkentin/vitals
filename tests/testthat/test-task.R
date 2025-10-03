@@ -876,14 +876,14 @@ test_that("eval routes arguments correctly to solver and scorer", {
   solver_arg_tracker <- NULL
   scorer_arg_tracker <- NULL
 
+  ch <- chat_openai(model = "gpt-4.1-nano")
+  ch$chat("Hey!", echo = FALSE)
+
   custom_solver <- function(inputs, solver_param = "default_solver") {
     solver_arg_tracker <<- solver_param
     list(
       result = c("4", "5"),
-      solver_chat = list(
-        chat_openai(model = "gpt-4.1-nano"),
-        chat_openai(model = "gpt-4.1-nano")
-      )
+      solver_chat = list(ch, ch)
     )
   }
 
@@ -919,15 +919,15 @@ test_that("eval routes arguments to functions with ellipses", {
   solver_dots_tracker <- NULL
   scorer_dots_tracker <- NULL
 
+  ch <- chat_openai(model = "gpt-4.1-nano")
+  ch$chat("Hey!", echo = FALSE)
+
   solver_with_dots <- function(inputs, ...) {
     dots <- list(...)
     solver_dots_tracker <<- dots
     list(
       result = c("4", "5"),
-      solver_chat = list(
-        chat_openai(model = "gpt-4.1-nano"),
-        chat_openai(model = "gpt-4.1-nano")
-      )
+      solver_chat = list(ch, ch)
     )
   }
 
@@ -963,15 +963,15 @@ test_that("eval routes unmatched arguments to solver with ellipses only", {
 
   solver_dots_tracker <- NULL
 
+  ch <- chat_openai(model = "gpt-4.1-nano")
+  ch$chat("Hey!", echo = FALSE)
+
   solver_with_dots <- function(inputs, ...) {
     dots <- list(...)
     solver_dots_tracker <<- dots
     list(
       result = c("4", "5"),
-      solver_chat = list(
-        chat_openai(model = "gpt-4.1-nano"),
-        chat_openai(model = "gpt-4.1-nano")
-      )
+      solver_chat = list(ch, ch)
     )
   }
 
@@ -1025,13 +1025,13 @@ test_that("eval errors when argument matches neither function and neither has el
     target = c("4", "5")
   )
 
+  ch <- chat_openai(model = "gpt-4.1-nano")
+  ch$chat("Hey!", echo = FALSE)
+
   solver_no_dots <- function(inputs, solver_param = "default") {
     list(
       result = c("4", "5"),
-      solver_chat = list(
-        chat_openai(model = "gpt-4.1-nano"),
-        chat_openai(model = "gpt-4.1-nano")
-      )
+      solver_chat = list(ch, ch)
     )
   }
 
