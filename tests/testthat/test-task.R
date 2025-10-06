@@ -1,5 +1,5 @@
 test_that("Task R6 class works", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
+  key_get("OPENAI_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
   withr::local_options(cli.default_handler = function(...) {})
@@ -48,7 +48,7 @@ test_that("Task R6 class works", {
 })
 
 test_that("Task with epochs works", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
+  key_get("OPENAI_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
   withr::local_options(cli.default_handler = function(...) {})
@@ -90,7 +90,7 @@ test_that("Task with epochs works", {
 })
 
 test_that("Task respects `$new(epochs)`", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
+  key_get("OPENAI_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
   withr::local_options(cli.default_handler = function(...) {})
@@ -117,7 +117,7 @@ test_that("Task respects `$new(epochs)`", {
 })
 
 test_that("`$eval(epochs)` takes precedence over `$new(epochs)`", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
+  key_get("OPENAI_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
   withr::local_options(cli.default_handler = function(...) {})
@@ -241,7 +241,7 @@ test_that("Task errors informatively with duplicate ids", {
 
 # solver ------------------------------------------------------------------
 test_that("set_solver works", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
+  key_get("OPENAI_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
   withr::local_options(cli.default_handler = function(...) {})
@@ -295,7 +295,7 @@ test_that("set_solver works", {
 })
 
 test_that("set_solver works", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
+  key_get("OPENAI_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
   withr::local_options(cli.default_handler = function(...) {})
@@ -350,7 +350,7 @@ test_that("set_solver works", {
 
 # scorer ------------------------------------------------------------------
 test_that("set_scorer works", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
+  key_get("OPENAI_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
   withr::local_options(cli.default_handler = function(...) {})
@@ -431,7 +431,7 @@ test_that("set_scorer works", {
 
 # metrics ------------------------------------------------------------------
 test_that("default metrics are applied effectively", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
+  key_get("OPENAI_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
   withr::local_options(cli.default_handler = function(...) {})
@@ -460,7 +460,7 @@ test_that("default metrics are applied effectively", {
 })
 
 test_that("task applies non-default metrics", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
+  key_get("OPENAI_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
   withr::local_options(cli.default_handler = function(...) {})
@@ -501,7 +501,7 @@ test_that("task applies non-default metrics", {
 })
 
 test_that("task errors informatively with bad metrics", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
+  key_get("OPENAI_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
   withr::local_options(cli.default_handler = function(...) {})
@@ -563,7 +563,7 @@ test_that("task errors informatively with bad metrics", {
 
 # misc ------------------------------------------------------------------
 test_that("task ids are deterministic", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
+  key_get("OPENAI_API_KEY")
 
   tsk_1 <-
     Task$new(
@@ -587,7 +587,7 @@ test_that("task ids are deterministic", {
 })
 
 test_that("Task completeness is tracked and preserved", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
+  key_get("OPENAI_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
   withr::local_options(cli.default_handler = function(...) {})
@@ -715,7 +715,7 @@ test_that("Task detects non-Chat objects in solver_chat", {
 })
 
 test_that("Task errors informatively with bad scorer output", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
+  key_get("OPENAI_API_KEY")
   withr::local_envvar(list(VITALS_LOG_DIR = withr::local_tempdir()))
   withr::local_options(cli.default_handler = function(...) {})
   local_mocked_bindings(interactive = function(...) FALSE)
@@ -738,7 +738,7 @@ test_that("Task errors informatively with bad scorer output", {
 })
 
 test_that("Task detects non-Chat objects in scorer_chat", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
+  key_get("OPENAI_API_KEY")
   withr::local_envvar(list(VITALS_LOG_DIR = withr::local_tempdir()))
   withr::local_options(cli.default_handler = function(...) {})
   local_mocked_bindings(interactive = function(...) FALSE)
@@ -764,7 +764,7 @@ test_that("Task detects non-Chat objects in scorer_chat", {
 })
 
 test_that("token usage is logged correctly", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
+  key_get("OPENAI_API_KEY")
   withr::local_envvar(list(VITALS_LOG_DIR = withr::local_tempdir()))
   withr::local_options(cli.default_handler = function(...) {})
   local_mocked_bindings(interactive = function(...) FALSE)
@@ -821,8 +821,8 @@ test_that("token usage is logged correctly", {
 
 
 test_that("token usage is logged correctly (with unrelated token usage)", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
-  skip_if(identical(Sys.getenv("ANTHROPIC_API_KEY"), ""))
+  key_get("OPENAI_API_KEY")
+  key_get("ANTHROPIC_API_KEY")
   withr::local_envvar(list(VITALS_LOG_DIR = withr::local_tempdir()))
   withr::local_options(cli.default_handler = function(...) {})
   local_mocked_bindings(interactive = function(...) FALSE)
@@ -865,7 +865,7 @@ test_that("token usage is logged correctly (with unrelated token usage)", {
 
 # argument routing --------------------------------------------------------
 test_that("eval routes arguments correctly to solver and scorer", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
+  key_get("OPENAI_API_KEY")
   withr::local_envvar(list(VITALS_LOG_DIR = withr::local_tempdir()))
   withr::local_options(cli.default_handler = function(...) {})
   local_mocked_bindings(interactive = function(...) FALSE)
@@ -908,7 +908,7 @@ test_that("eval routes arguments correctly to solver and scorer", {
 })
 
 test_that("eval routes arguments to functions with ellipses", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
+  key_get("OPENAI_API_KEY")
   withr::local_envvar(list(VITALS_LOG_DIR = withr::local_tempdir()))
   withr::local_options(cli.default_handler = function(...) {})
   local_mocked_bindings(interactive = function(...) FALSE)
@@ -953,7 +953,7 @@ test_that("eval routes arguments to functions with ellipses", {
 })
 
 test_that("eval routes unmatched arguments to solver with ellipses only", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
+  key_get("OPENAI_API_KEY")
   withr::local_envvar(list(VITALS_LOG_DIR = withr::local_tempdir()))
   withr::local_options(cli.default_handler = function(...) {})
   local_mocked_bindings(interactive = function(...) FALSE)
@@ -1017,7 +1017,7 @@ test_that("eval errors with unnamed arguments", {
 })
 
 test_that("eval errors when argument matches neither function and neither has ellipses", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
+  key_get("OPENAI_API_KEY")
   withr::local_envvar(list(VITALS_LOG_DIR = withr::local_tempdir()))
   withr::local_options(cli.default_handler = function(...) {})
   local_mocked_bindings(interactive = function(...) FALSE)

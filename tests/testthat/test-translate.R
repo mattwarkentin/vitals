@@ -16,7 +16,7 @@ test_that("expect_valid_log fails when log file is nonsense", {
 })
 
 test_that("vitals writes valid eval logs (basic, openai)", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
+  key_get("OPENAI_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
   withr::local_options(cli.default_handler = function(...) {})
@@ -37,7 +37,7 @@ test_that("vitals writes valid eval logs (basic, openai)", {
 })
 
 test_that("vitals writes valid eval logs (basic, claude)", {
-  skip_if(identical(Sys.getenv("ANTHROPIC_API_KEY"), ""))
+  key_get("ANTHROPIC_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
   withr::local_options(cli.default_handler = function(...) {})
@@ -60,7 +60,7 @@ test_that("vitals writes valid eval logs (basic, claude)", {
 })
 
 test_that("vitals writes valid eval logs (basic, gemini)", {
-  skip_if(identical(Sys.getenv("GOOGLE_API_KEY"), ""))
+  key_get("GOOGLE_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
   withr::local_options(cli.default_handler = function(...) {})
@@ -82,7 +82,7 @@ test_that("vitals writes valid eval logs (basic, gemini)", {
 
 
 test_that("vitals writes valid eval logs (solver tool calls, claude)", {
-  skip_if(identical(Sys.getenv("ANTHROPIC_API_KEY"), ""))
+  key_get("ANTHROPIC_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
   withr::local_options(cli.default_handler = function(...) {})
@@ -109,7 +109,7 @@ test_that("vitals writes valid eval logs (solver tool calls, claude)", {
 })
 
 test_that("vitals writes valid eval logs (solver errors on tool call, claude)", {
-  skip_if(identical(Sys.getenv("ANTHROPIC_API_KEY"), ""))
+  key_get("ANTHROPIC_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
   withr::local_options(cli.default_handler = function(...) {})
@@ -145,7 +145,7 @@ test_that("vitals writes valid eval logs (solver errors on tool call, claude)", 
 })
 
 test_that("vitals writes valid logs with numeric solver results (#145)", {
-  skip_if(identical(Sys.getenv("ANTHROPIC_API_KEY"), ""))
+  key_get("ANTHROPIC_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
   withr::local_options(cli.default_handler = function(...) {})
