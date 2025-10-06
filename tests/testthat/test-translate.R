@@ -51,7 +51,7 @@ test_that("vitals writes valid eval logs (basic, claude)", {
   tsk <- Task$new(
     dataset = simple_addition,
     solver = generate(ellmer::chat_anthropic(
-      model = "claude-3-7-sonnet-latest"
+      model = "claude-sonnet-4-5-20250929"
     )),
     scorer = model_graded_qa()
   )
@@ -94,7 +94,7 @@ test_that("vitals writes valid eval logs (solver tool calls, claude)", {
     target = c("2024-01-01")
   )
 
-  ch <- chat_anthropic(model = "claude-3-7-sonnet-latest")
+  ch <- chat_anthropic(model = "claude-sonnet-4-5-20250929")
   ch$register_tool(tool(function() "2024-01-01", "Return the current date"))
 
   tsk <- Task$new(
@@ -121,7 +121,7 @@ test_that("vitals writes valid eval logs (solver errors on tool call, claude)", 
     target = c("2024-01-01")
   )
 
-  ch <- chat_anthropic(model = "claude-3-7-sonnet-latest")
+  ch <- chat_anthropic(model = "claude-sonnet-4-5-20250929")
   ch$register_tool(
     tool(function() stop("Couldn't find the date"), "Return the current date")
   )
@@ -156,7 +156,7 @@ test_that("vitals writes valid logs with numeric solver results (#145)", {
     target = c("4", "5")
   )
 
-  chat <- ellmer::chat_anthropic(model = "claude-3-7-sonnet-latest")
+  chat <- ellmer::chat_anthropic(model = "claude-sonnet-4-5-20250929")
   chat$chat("Hey!", echo = FALSE)
 
   simple_solver <- function(inputs) {

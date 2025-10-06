@@ -86,7 +86,7 @@
 #'   # create a new Task
 #'   tsk <- Task$new(
 #'     dataset = simple_addition,
-#'     solver = generate(chat_anthropic(model = "claude-3-7-sonnet-latest")),
+#'     solver = generate(chat_anthropic(model = "claude-sonnet-4-5-20250929")),
 #'     scorer = model_graded_qa()
 #'   )
 #'
@@ -202,7 +202,9 @@ Task <- R6::R6Class(
       }
 
       dots <- list(...)
-      if (length(dots) > 0 && (is.null(names(dots)) || any(names(dots) == ""))) {
+      if (
+        length(dots) > 0 && (is.null(names(dots)) || any(names(dots) == ""))
+      ) {
         cli::cli_abort(
           "All arguments in {.code ...} must be named.",
           call = call2("$eval()")

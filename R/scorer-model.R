@@ -46,7 +46,7 @@
 #'
 #'   tsk <- Task$new(
 #'     dataset = simple_addition,
-#'     solver = generate(solver_chat = chat_anthropic(model = "claude-3-7-sonnet-latest")),
+#'     solver = generate(solver_chat = chat_anthropic(model = "claude-sonnet-4-5-20250929")),
 #'     scorer = model_graded_qa()
 #'   )
 #'
@@ -71,7 +71,7 @@
 #'
 #'   tsk <- Task$new(
 #'     dataset = r_history,
-#'     solver = generate(solver_chat = chat_anthropic(model = "claude-3-7-sonnet-latest")),
+#'     solver = generate(solver_chat = chat_anthropic(model = "claude-sonnet-4-5-20250929")),
 #'     scorer = model_graded_fact()
 #'   )
 #'

@@ -835,7 +835,10 @@ test_that("token usage is logged correctly (with unrelated token usage)", {
 
   # use a couple tokens to ensure non-NULL
   chat_openai(model = "gpt-4.1-nano")$chat("hey!", echo = "none")
-  chat_anthropic(model = "claude-3-7-sonnet-latest")$chat("hey!", echo = "none")
+  chat_anthropic(model = "claude-sonnet-4-5-20250929")$chat(
+    "hey!",
+    echo = "none"
+  )
   usage_before <- ellmer::token_usage()
   usage_before <- dplyr::filter(usage_before, model == "gpt-4.1-nano")
 
