@@ -17,7 +17,7 @@ is_replaying <- function() {
 key_get <- function(name, error_call = caller_env()) {
   val <- Sys.getenv(name)
   if (!identical(val, "")) {
-    val
+    invisible(val)
   } else {
     if (is_replaying()) {
       ""
