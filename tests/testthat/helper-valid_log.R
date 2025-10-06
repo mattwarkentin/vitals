@@ -68,35 +68,40 @@ expect_valid_log <- local({
       stderr = TRUE
     )
 
+    status <- attr(result, "status")
+
     # "inst/test/inspect/logs/2025-03-24T10-39-36-05-00_simple-arithmetic_fQ9mYnqZFhtEuUenPpJgKL.json"
     if (length(result) == 1) {
       formatted_message <- cli::format_message(c(
         "The generated log did not pass the pydantic model:",
         glue::glue("{{.field {result[1]}}}")
       ))
-    } else {
-      # Get rid of elements starting with "For further information visit"
-      result <- result[!grepl("For further information visit", result)]
-      # Add .field CLI on the fields
-      result_length <- length(result)
-      field_positions <- seq(2, result_length, by = 2)
-
-      for (pos in field_positions) {
-        result[pos] <- glue::glue("{{.field {result[pos]}}}")
-      }
-
-      result_with_breaks <- result[1] # Start with first element
-      for (i in seq(2, length(result), by = 2)) {
-        result_with_breaks <- c(result_with_breaks, "", result[i:(i + 1)])
-      }
-
-      formatted_message <- cli::format_message(c(
-        "The generated log did not pass the pydantic model:",
-        "",
-        result_with_breaks
-      ))
+      expect(
+        is.null(status) || status == 0,
+        formatted_message
+      )
     }
-    status <- attr(result, "status")
+
+    # Make the result more readable by removing redundant elements
+    # and formatting indices with cli (#159)
+    result <- result[!grepl("For further information visit", result)]
+    result_length <- length(result)
+    field_positions <- seq(2, result_length, by = 2)
+
+    for (pos in field_positions) {
+      result[pos] <- glue::glue("{{.field {result[pos]}}}")
+    }
+
+    result_with_breaks <- result[1]
+    for (i in seq(2, length(result), by = 2)) {
+      result_with_breaks <- c(result_with_breaks, "", result[i:(i + 1)])
+    }
+
+    formatted_message <- cli::format_message(c(
+      "The generated log did not pass the pydantic model:",
+      "",
+      result_with_breaks
+    ))
 
     expect(
       is.null(status) || status == 0,
