@@ -1,5 +1,8 @@
 # vitals (development version)
 
+* Internal `expect_valid_log()` now styles Pydantic output for readability 
+  (#159 by howardbaik).
+
 * Manifest files for deployed logs are now named `listing.json` rather than `logs.json` for compatibility with newer Inspect versions.
 
 * Removed dependency on the rstudioapi package (#146).
