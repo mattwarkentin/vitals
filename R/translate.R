@@ -26,7 +26,7 @@ translate_to_eval <- function(
   task,
   task_id,
   task_version = 0,
-  task_file = active_file(),
+  task_file = "",
   task_attribs = c(),
   task_args = c(),
   dataset,
@@ -205,7 +205,7 @@ translate_to_score <- function(
   if (is.null(scorer_chat)) {
     return(list(
       value = score,
-      answer = output,
+      answer = as.character(output),
       explanation = scorer,
       metadata = metadata
     ))
@@ -216,7 +216,7 @@ translate_to_score <- function(
 
   list(
     value = score,
-    answer = output,
+    answer = as.character(output),
     explanation = explanation,
     metadata = c(
       list(

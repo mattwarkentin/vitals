@@ -32,7 +32,6 @@ Imports:
     purrr,
     R6,
     rlang,
-    rstudioapi,
     S7,
     tibble,
     tidyr,

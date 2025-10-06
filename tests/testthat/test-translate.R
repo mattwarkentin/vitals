@@ -144,6 +144,41 @@ test_that("vitals writes valid eval logs (solver errors on tool call, claude)", 
   expect_valid_log(log_file[1])
 })
 
+test_that("vitals writes valid logs with numeric solver results (#145)", {
+  skip_if(identical(Sys.getenv("ANTHROPIC_API_KEY"), ""))
+  tmp_dir <- withr::local_tempdir()
+  withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
+  withr::local_options(cli.default_handler = function(...) {})
+  local_mocked_bindings(interactive = function(...) FALSE)
+
+  simple_dataset <- tibble::tibble(
+    input = c("What's 2+2?", "What's 2+3?"),
+    target = c("4", "5")
+  )
+
+  chat <- ellmer::chat_anthropic(model = "claude-3-7-sonnet-latest")
+  chat$chat("Hey!", echo = FALSE)
+
+  simple_solver <- function(inputs) {
+    list(
+      result = rep(1.5, length(inputs)),
+      solver_chat = lapply(inputs, function(x) {
+        chat
+      })
+    )
+  }
+
+  tsk <- Task$new(
+    dataset = simple_dataset,
+    solver = simple_solver,
+    scorer = model_graded_qa()
+  )
+
+  tsk$eval()
+  log_path <- tsk$log()
+  expect_valid_log(log_path)
+})
+
 test_that("as_metadata can make lists into a named vector (#69)", {
   res <- as_metadata(mtcars[1:2, 1:2])
   expect_type(res, "list")
