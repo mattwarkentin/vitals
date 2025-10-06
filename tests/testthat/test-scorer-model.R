@@ -1,5 +1,6 @@
 test_that("model_graded_qa works", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
+  vcr::local_cassette("scorer-model-graded-qa")
+  key_get("OPENAI_API_KEY")
   skip_on_cran()
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
@@ -40,7 +41,8 @@ test_that("model_graded_qa works", {
 })
 
 test_that("model_graded_fact works", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
+  vcr::local_cassette("scorer-model-graded-fact")
+  key_get("OPENAI_API_KEY")
   skip_on_cran()
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))

@@ -16,7 +16,8 @@ test_that("expect_valid_log fails when log file is nonsense", {
 })
 
 test_that("vitals writes valid eval logs (basic, openai)", {
-  skip_if(identical(Sys.getenv("OPENAI_API_KEY"), ""))
+  vcr::local_cassette("translate-openai-basic")
+  key_get("OPENAI_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
   withr::local_options(cli.default_handler = function(...) {})
@@ -37,7 +38,8 @@ test_that("vitals writes valid eval logs (basic, openai)", {
 })
 
 test_that("vitals writes valid eval logs (basic, claude)", {
-  skip_if(identical(Sys.getenv("ANTHROPIC_API_KEY"), ""))
+  vcr::local_cassette("translate-anthropic-basic")
+  key_get("ANTHROPIC_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
   withr::local_options(cli.default_handler = function(...) {})
@@ -60,7 +62,8 @@ test_that("vitals writes valid eval logs (basic, claude)", {
 })
 
 test_that("vitals writes valid eval logs (basic, gemini)", {
-  skip_if(identical(Sys.getenv("GOOGLE_API_KEY"), ""))
+  vcr::local_cassette("translate-google-basic")
+  key_get("GOOGLE_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
   withr::local_options(cli.default_handler = function(...) {})
@@ -82,7 +85,8 @@ test_that("vitals writes valid eval logs (basic, gemini)", {
 
 
 test_that("vitals writes valid eval logs (solver tool calls, claude)", {
-  skip_if(identical(Sys.getenv("ANTHROPIC_API_KEY"), ""))
+  vcr::local_cassette("translate-anthropic-tool-calls")
+  key_get("ANTHROPIC_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
   withr::local_options(cli.default_handler = function(...) {})
@@ -95,7 +99,11 @@ test_that("vitals writes valid eval logs (solver tool calls, claude)", {
   )
 
   ch <- chat_anthropic(model = "claude-sonnet-4-5-20250929")
-  ch$register_tool(tool(function() "2024-01-01", "Return the current date"))
+  ch$register_tool(tool(
+    function() "2024-01-01",
+    name = "get_current_date",
+    description = "Return the current date"
+  ))
 
   tsk <- Task$new(
     dataset = current_date,
@@ -109,7 +117,7 @@ test_that("vitals writes valid eval logs (solver tool calls, claude)", {
 })
 
 test_that("vitals writes valid eval logs (solver errors on tool call, claude)", {
-  skip_if(identical(Sys.getenv("ANTHROPIC_API_KEY"), ""))
+  key_get("ANTHROPIC_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
   withr::local_options(cli.default_handler = function(...) {})
@@ -123,7 +131,11 @@ test_that("vitals writes valid eval logs (solver errors on tool call, claude)", 
 
   ch <- chat_anthropic(model = "claude-sonnet-4-5-20250929")
   ch$register_tool(
-    tool(function() stop("Couldn't find the date"), "Return the current date")
+    tool(
+      function() stop("Couldn't find the date"),
+      name = "get_current_date",
+      description = "Return the current date"
+    )
   )
 
   tsk <- Task$new(
@@ -145,7 +157,8 @@ test_that("vitals writes valid eval logs (solver errors on tool call, claude)", 
 })
 
 test_that("vitals writes valid logs with numeric solver results (#145)", {
-  skip_if(identical(Sys.getenv("ANTHROPIC_API_KEY"), ""))
+  vcr::local_cassette("translate-numeric-results")
+  key_get("ANTHROPIC_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
   withr::local_options(cli.default_handler = function(...) {})

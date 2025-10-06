@@ -1,5 +1,8 @@
 # vitals (development version)
 
+* The full suite of package tests can now be ran without active API keys via
+  the vcr package (#163).
+
 * Internal `expect_valid_log()` now styles Pydantic output for readability 
   (#159 by howardbaik).
 
