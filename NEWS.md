@@ -1,5 +1,10 @@
 # vitals (development version)
 
+* `$eval()` and `$log()` will now write log files to the same default 
+  directory--the one specified when initializing the Task object. 
+  Previously, `$eval()` wrote to that directory, while `$log()` wrote 
+  to `vitals_log_dir()` (#158 by @SokolovAnatoliy).
+
 * Solvers and scorers can now return arbitrary R objects in metadata; they 
   will be summarized in a lossy format when logged to .json.
 
