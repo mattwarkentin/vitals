@@ -1,4 +1,5 @@
 test_that("model_graded_qa works", {
+  vcr::local_cassette("scorer-model-graded-qa")
   key_get("OPENAI_API_KEY")
   skip_on_cran()
   tmp_dir <- withr::local_tempdir()
@@ -40,6 +41,7 @@ test_that("model_graded_qa works", {
 })
 
 test_that("model_graded_fact works", {
+  vcr::local_cassette("scorer-model-graded-fact")
   key_get("OPENAI_API_KEY")
   skip_on_cran()
   tmp_dir <- withr::local_tempdir()

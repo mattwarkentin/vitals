@@ -17,6 +17,7 @@ test_that("translate_to_messages works with example turns", {
 
 
 test_that("logs including system prompts are compatible with inspect", {
+  vcr::local_cassette("translate-messages-system-prompts")
   key_get("OPENAI_API_KEY")
   tmp_dir <- withr::local_tempdir()
   withr::local_envvar(list(VITALS_LOG_DIR = tmp_dir))
