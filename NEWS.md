@@ -1,5 +1,11 @@
 # vitals (development version)
 
+
+* `$eval()` and `$log()` will now write log files to the same default 
+  directory--the one specified when initializing the Task object. 
+  Previously, `$eval()` wrote to that directory, while `$log()` wrote 
+  to `vitals_log_dir()` (#158 by @SokolovAnatoliy).
+
 * Manifest files for deployed logs are now named `listing.json` rather than `logs.json` for compatibility with newer Inspect versions.
 
 * Removed dependency on the rstudioapi package (#146).

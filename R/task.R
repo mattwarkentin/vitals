@@ -348,7 +348,7 @@ Task <- R6::R6Class(
     #' @param dir The directory to write the log to.
     #'
     #' @return The path to the logged file, invisibly.
-    log = function(dir = vitals_log_dir()) {
+    log = function(dir = self$dir) {
       if (!private$scored) {
         cli::cli_abort(
           "Task has not been scored yet. Run task$score() first."
@@ -417,15 +417,10 @@ Task <- R6::R6Class(
       )
 
       if (is.na(dir)) {
-        if (!is.na(self$dir)) {
-          dir <- self$dir
-        } else {
-          dir <- tempdir()
-        }
+        self$dir <- tempdir()
       }
 
-      self$dir <- dir
-      log_path <- eval_log_write(eval_log, dir = dir)
+      log_path <- eval_log_write(eval_log, dir = self$dir)
 
       invisible(log_path)
     },
