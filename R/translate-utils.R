@@ -120,6 +120,9 @@ eval_log_filename <- function(eval_log) {
 }
 
 results_scores <- function(name, metrics) {
+  if (length(metrics) == 0) {
+    metrics <- c()
+  }
   list(list(
     name = name,
     scorer = name,

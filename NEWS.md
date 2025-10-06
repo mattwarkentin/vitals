@@ -1,5 +1,8 @@
 # vitals (development version)
 
+* Fixed bug where non-default grading systems in model-graded evals would
+  result in scores being wiped during logging (#139).
+
 * The full suite of package tests can now be ran without active API keys via
   the vcr package (#163).
 
