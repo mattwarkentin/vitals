@@ -1,5 +1,7 @@
 # vitals (development version)
 
+* Internal `expect_valid_log()` now styles Pydantic output for readability 
+  (#159 by howardbaik).
 
 * `$eval()` and `$log()` will now write log files to the same default 
   directory--the one specified when initializing the Task object. 
