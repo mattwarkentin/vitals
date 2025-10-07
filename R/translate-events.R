@@ -690,8 +690,6 @@ create_scoring_model_event <- function(turn, sample, timestamp) {
 }
 
 create_score_event <- function(turn, sample, timestamp) {
-  solver_chat <- sample$solver_chat[[1]]
-  solver_turn <- solver_chat$last_turn()
   scorer_user_turn <- sample$scorer_chat[[1]]$get_turns()[[1]]
 
   list(list(
@@ -700,7 +698,7 @@ create_score_event <- function(turn, sample, timestamp) {
     event = "score",
     score = list(
       value = "C",
-      answer = solver_turn@text,
+      answer = sample$result,
       explanation = turn@text,
       metadata = list(
         grading = list(

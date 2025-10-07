@@ -1,5 +1,10 @@
 # vitals (development version)
 
+* The log viewer previously reported the solver's response as the answer provided
+  to the scorer. However, these two texts can differ when post-processing of
+  the solver's response is performed. This is now fixed in the log 
+  viewer (#166, #169 by @mattwarkentin).
+
 * Fixed bug where non-default grading systems in model-graded evals would
   result in scores being wiped during logging (#139).
 
