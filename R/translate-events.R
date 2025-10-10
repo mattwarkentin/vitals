@@ -697,7 +697,7 @@ create_score_event <- function(turn, sample, timestamp) {
     working_start = attr(turn, "working_start"),
     event = "score",
     score = list(
-      value = "C",
+      value = sample$score,
       answer = sample$result,
       explanation = turn@text,
       metadata = list(
