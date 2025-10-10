@@ -60,3 +60,18 @@ Historical task objects capture the version of `$log()` that existed when they w
 5. Repeat for each serialized task whose logs need updating.
 
 This pattern lets the stored tasks emit logs with the current translation pipeline without having to rebuild them from scratch.
+
+To regenerate and validate logs using the Python virtualenv that bundles `inspect_ai` + `pydantic` (e.g. `~/.virtualenvs/pyvenv`):
+
+1. Export the interpreter and bypass flag before launching R (or call `Sys.setenv()` immediately after entering R):
+   ```bash
+   export VITALS_PYTHON="$HOME/.virtualenvs/pyvenv/bin/python"
+   export NOT_CRAN=true
+   ```
+2. `devtools::load_all()`.
+3. For each saved task (following the rebinding steps above):
+   ```r
+   path <- task$log()
+   expect_valid_log(path)
+   ```
+   `expect_valid_log()` will now invoke the Pydantic models via the specified virtualenv to confirm the regenerated JSON is valid.
