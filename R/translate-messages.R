@@ -60,7 +60,12 @@ collapse_tool_result <- function(tool_result) {
     return(as.character(tool_result@error))
   }
 
-  content_list <- purrr::map(tool_result@value, tool_result_value_to_content)
+  value <- tool_result@value
+  if (!is.list(value)) {
+    value <- list(value)
+  }
+
+  content_list <- purrr::map(value, tool_result_value_to_content)
 
   all_text <- all(purrr::map_lgl(content_list, function(x) x$type == "text"))
 
@@ -76,25 +81,19 @@ tool_result_value_to_content <- function(x) {
     return(list(type = "text", text = paste0(x, collapse = "\n")))
   }
 
-  switch(
-    x$type,
-    text = list(type = "text", text = x$text),
-    image = list(
+  if (inherits(x, "ellmer::ContentImageInline")) {
+    media_type <- x@type %||% "image/png"
+    return(list(
       type = "image",
-      image = paste0("data:", x$source$media_type, ";base64,", x$source$data)
-    ),
-    audio = list(
-      type = "audio",
-      audio = paste0("data:", x$source$media_type, ";base64,", x$source$data),
-      format = extract_format_from_media_type(x$source$media_type, "wav")
-    ),
-    video = list(
-      type = "video",
-      video = paste0("data:", x$source$media_type, ";base64,", x$source$data),
-      format = extract_format_from_media_type(x$source$media_type, "mp4")
-    ),
-    list(type = "text", text = input_string(tibble::as_tibble(x$source)))
-  )
+      image = paste0("data:", media_type, ";base64,", x@data)
+    ))
+  }
+
+  if (inherits(x, "ellmer::ContentText")) {
+    return(list(type = "text", text = x@text))
+  }
+
+  list(type = "text", text = input_string(tibble::as_tibble(x)))
 }
 
 extract_format_from_media_type <- function(media_type, default) {
