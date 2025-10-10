@@ -1,5 +1,8 @@
 # vitals (development version)
 
+* The default `accuracy()` metric will now report a score of 0 rather than 
+  `NaN` when all scores are 0.
+
 * Fixed bug where non-default grading systems in model-graded evals would
   result in scores being wiped during logging (#139).
 

@@ -700,7 +700,10 @@ Task <- R6::R6Class(
         if (any(is.na(numeric_scores))) {
           return()
         }
-        numeric_scores <- numeric_scores / max(numeric_scores, na.rm = TRUE)
+        max_score <- max(numeric_scores, na.rm = TRUE)
+        if (is.finite(max_score) && max_score > 0) {
+          numeric_scores <- numeric_scores / max_score
+        }
         private$metric_results <-
           list2(
             accuracy = logged(accuracy)(numeric_scores)
