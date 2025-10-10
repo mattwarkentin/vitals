@@ -35,3 +35,28 @@ When you're running package tests, use `devtools::load_all(); testthat::test_fil
 To get a sense for the style used to write and test code, read `R/task.R` and `tests/testthat/test-task.R`, respectively. Notable, **do not comment your code** besides roxygen comments.
 
 You've been provided with a number of tools that allow you to peruse package documentation; use them liberally. When writing non-base or -tidyverse code, check the help page for functions you use to ensure that you've set function arguments correctly.
+
+## Refreshing stored Tasks with updated `$log()` logic
+
+Historical task objects capture the version of `$log()` that existed when they were serialized. When the implementation changes, regenerate their logs by temporarily swapping in the current method from `Task$public_methods`:
+
+1. `devtools::load_all("inst/sandbox/vitals")` so the latest `Task` definition is on the search path.
+2. `load("path/to/tsk_example.rda")`; the task object is stored under the same name as the file.
+3. Unlock the existing public `$log` binding, attach the current method, and restore the lock:
+   ```r
+   unlockBinding("log", task$.__enclos_env__$self)
+   fn <- Task$public_methods$log
+   environment(fn) <- task$.__enclos_env__
+   task$.__enclos_env__$self$log <- fn
+   lockBinding("log", task$.__enclos_env__$self)
+   ```
+   (The `environment(fn)` assignment ensures the method executes in the task's private environment.)
+4. Point the task at the log directory and call the refreshed method:
+   ```r
+   task$dir <- normalizePath("path/to/logs", mustWork = TRUE)
+   path <- task$log()
+   ```
+   You'll probably want to remove the old log resulting from the same object, if there is one.
+5. Repeat for each serialized task whose logs need updating.
+
+This pattern lets the stored tasks emit logs with the current translation pipeline without having to rebuild them from scratch.
