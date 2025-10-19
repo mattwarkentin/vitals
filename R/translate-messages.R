@@ -60,27 +60,46 @@ collapse_tool_result <- function(tool_result) {
     return(as.character(tool_result@error))
   }
 
-  paste0(
-    purrr::map_chr(tool_result@value, collapse_tool_result_value),
-    collapse = "\n"
-  )
-}
-
-collapse_tool_result_value <- function(x) {
-  if (is.atomic(x)) {
-    return(paste0(x, collapse = "\n"))
+  value <- tool_result@value
+  if (!is.list(value)) {
+    value <- list(value)
   }
 
-  switch(
-    x$type,
-    text = x$text,
-    image = paste0("data:", x$source$media_type, ";base64,", x$source$data),
-    collapse_modal_result(x$source, type = x$type)
-  )
+  content_list <- purrr::map(value, tool_result_value_to_content)
+
+  all_text <- all(purrr::map_lgl(content_list, function(x) x$type == "text"))
+
+  if (all_text) {
+    return(paste0(purrr::map_chr(content_list, function(x) x$text), collapse = "\n"))
+  }
+
+  content_list
 }
 
-collapse_modal_result <- function(x, type) {
-  x_tbl <- tibble::as_tibble(x)
-  x_tbl$data <- paste0("<TRUNCATED>", type, " tool result.<\\TRUNCATED>")
-  input_string(x_tbl)
+tool_result_value_to_content <- function(x) {
+  if (is.atomic(x)) {
+    return(list(type = "text", text = paste0(x, collapse = "\n")))
+  }
+
+  if (inherits(x, "ellmer::ContentImageInline")) {
+    media_type <- x@type %||% "image/png"
+    return(list(
+      type = "image",
+      image = paste0("data:", media_type, ";base64,", x@data)
+    ))
+  }
+
+  if (inherits(x, "ellmer::ContentText")) {
+    return(list(type = "text", text = x@text))
+  }
+
+  list(type = "text", text = input_string(tibble::as_tibble(x)))
+}
+
+extract_format_from_media_type <- function(media_type, default) {
+  parts <- strsplit(media_type, "/")[[1]]
+  if (length(parts) == 2) {
+    return(parts[2])
+  }
+  default
 }

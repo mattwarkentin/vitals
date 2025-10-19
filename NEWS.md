@@ -1,9 +1,13 @@
 # vitals (development version)
 
+
 * The log viewer previously reported the solver's response as the answer provided
   to the scorer. However, these two texts can differ when post-processing of
   the solver's response is performed. This is now fixed in the log 
   viewer (#166, #169 by @mattwarkentin).
+
+* The default `accuracy()` metric will now report a score of 0 rather than 
+  `NaN` when all scores are 0.
 
 * Fixed bug where non-default grading systems in model-graded evals would
   result in scores being wiped during logging (#139).
@@ -36,8 +40,8 @@
 
 * Numeric task targets will no longer introduce errors in the log viewer.
 
-* Images generated from tool calls will now be logged compatibly with the log 
-  viewer (#138).
+* Images, audio, and video generated from tool calls will now be logged 
+  compatibly with the log viewer (#138).
 
 * Updated the vendored Inspect Log Viewer to Inspect version 0.3.122 (#138).
 

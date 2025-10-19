@@ -66,12 +66,13 @@ translate_to_output <- function(chat) {
 
 translate_assistant_choices <- function(turn) {
   text_contents <- first_text_contents(turn)
+  text <- if (!is.null(text_contents)) text_contents@text else ""
   list(list(
     message = list(
       id = generate_id(),
       content = list(list(
         type = "text",
-        text = text_contents@text
+        text = text
       )),
       source = "generate",
       role = turn@role
