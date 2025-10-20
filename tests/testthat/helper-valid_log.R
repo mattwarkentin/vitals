@@ -70,21 +70,18 @@ expect_valid_log <- local({
 
     status <- attr(result, "status")
 
-    expect(
-      is.null(status) || status == 0,
-      formatted_pydantic_error(result)
-    )
-  }
-})
+    # "inst/test/inspect/logs/2025-03-24T10-39-36-05-00_simple-arithmetic_fQ9mYnqZFhtEuUenPpJgKL.json"
+    if (length(result) == 1) {
+      formatted_message <- cli::format_message(c(
+        "The generated log did not pass the pydantic model:",
+        glue::glue("{{.field {result[1]}}}")
+      ))
+      expect(
+        is.null(status) || status == 0,
+        formatted_message
+      )
+    }
 
-formatted_pydantic_error <- function(result) {
-  # "inst/test/inspect/logs/2025-03-24T10-39-36-05-00_simple-arithmetic_fQ9mYnqZFhtEuUenPpJgKL.json"
-  if (length(result) == 1) {
-    formatted_message <- cli::format_message(c(
-      "The generated log did not pass the pydantic model:",
-      glue::glue("{{.field {result[1]}}}")
-    ))
-  } else {
     # Make the result more readable by removing redundant elements
     # and formatting indices with cli (#159)
     result <- result[!grepl("For further information visit", result)]
@@ -105,5 +102,10 @@ formatted_pydantic_error <- function(result) {
       "",
       result_with_breaks
     ))
+
+    expect(
+      is.null(status) || status == 0,
+      formatted_message
+    )
   }
-}
+})
