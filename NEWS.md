@@ -15,9 +15,6 @@
 * The full suite of package tests can now be ran without active API keys via
   the vcr package (#163).
 
-* Internal `expect_valid_log()` now styles Pydantic output for readability 
-  (#159 by howardbaik).
-
 * `$eval()` and `$log()` will now write log files to the same default 
   directory--the one specified when initializing the Task object. 
   Previously, `$eval()` wrote to that directory, while `$log()` wrote 
